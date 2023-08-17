@@ -1,22 +1,19 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
-using System;
-using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UniverseLib;
+using UniverseLib.Config;
 
 namespace ColoredGasses
 {
     [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
-    [BepInProcess("rocketstation.exe")]
-    public class BepinXLoader : BaseUnityPlugin
+    //[BepInProcess("rocketstation.exe")]
+    public class ColoredGasses : BaseUnityPlugin
     {
         public const string PLUGIN_GUID = "com.ihatetn931.ColoredGasses";
         public const string PLUGIN_NAME = "Colored Gasses";
         public const string PLUGIN_VERSION = "1.0.0";
+        public static GameObject ColoredGassesGameObject;
 
         /*public static Color black = new Color32(0, 0, 0, 255);
         public static Color colorCarbon = new Color32(128, 128, 128, 255); //Carbon
@@ -52,13 +49,13 @@ namespace ColoredGasses
         internal static ConfigEntry<int> RGBBlueWater;
         internal static ConfigEntry<KeyboardShortcut> _keybind;
 
-        public static ConfigurationManager.ConfigurationManager man;
-        public static GameObject go;
+        public ColoredGasses()
+        {
+            ColoredGassesGameObject = new GameObject("ColoredGasses");
+        }
 
         void Awake()
         {
-            BepinXLoader.go = new GameObject("ConfigurationManager");
-            BepinXLoader.man = BepinXLoader.go.AddComponent<ConfigurationManager.ConfigurationManager>();
             Logger.LogInfo($"[ColoredGasses] Plugin {PLUGIN_GUID} is loading!");
             Harmony harmony = new Harmony(PLUGIN_GUID);
             harmony.PatchAll();
@@ -71,50 +68,44 @@ namespace ColoredGasses
             Debug.Log("[ColoredGasses] Settings Loading...");
             AddToggles();
             AddSliderInputs();
-            AddKeyInputs();
             Debug.Log("[ColoredGasses] Settings Loaded");
         }
 
         void AddToggles()
         {
-            toggleColorGasParticles = Config.Bind("Gasses Color", "Enable", true, new ConfigDescription("Enables Gas Colors, use Advanced Settings to change the colors", null, new ConfigurationManagerAttributes { Order = 2 }));
-            toggleColorCondensationParticles = Config.Bind("Condensation Color", "Enable", false, new ConfigDescription("Enables Condensation Colors, use Advanced Setting to change the colors", null, new ConfigurationManagerAttributes { Order = 1}));
+            toggleColorGasParticles = Config.Bind("AColoredGasses Toggles", "AColoredGasses Color Enable", true, new ConfigDescription("Enables Gas Colors, use RGB sliders to change the colors",null, new ConfigurationManagerAttributes { Order = 999 }));
+            toggleColorCondensationParticles = Config.Bind("AColoredGasses Toggles", "ACondensation Color Enable", false, new ConfigDescription("Enables Condensation Colors, use Advanced Setting to change the colors", null, new ConfigurationManagerAttributes { Order = 1,Browsable = false}));
         }
 
         public void AddSliderInputs()
         {
-            RGBRedCarbon = Config.Bind("Carbon Color", "Red", 128, new ConfigDescription("Red for Carbon Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true,Order = 21 }));
-            RGBGreenCarbon = Config.Bind("Carbon Color", "Green", 128, new ConfigDescription("Green for Carbon Color", new AcceptableValueRange<int>(0, 255),new ConfigurationManagerAttributes { IsAdvanced = true, Order = 20 }));
-            RGBBlueCarbon = Config.Bind("Carbon Color", "Blue", 128, new ConfigDescription("Blue for Carbon Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 19 }));
+            RGBRedCarbon = Config.Bind("ColoredGasses Carbon RGB Color Sliders", "Carbon Color Red", 128, new ConfigDescription("Red for Carbon Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {Browsable = true }));
+            RGBGreenCarbon = Config.Bind("ColoredGasses Carbon RGB Color Sliders", "Carbon Color Green", 128, new ConfigDescription("Green for Carbon Color", new AcceptableValueRange<int>(0, 255),new ConfigurationManagerAttributes { Browsable = true }));
+            RGBBlueCarbon = Config.Bind("ColoredGasses Carbon RGB Color Sliders", "Carbon Color Blue", 128, new ConfigDescription("Blue for Carbon Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { Browsable = true }));
 
-            RGBRedVolatiles = Config.Bind("Volatiles Color", "Red", 232, new ConfigDescription("Red for Volatile Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 18 }));
-            RGBGreenVolatiles = Config.Bind("Volatiles Color", "Green", 0, new ConfigDescription("Green for Volatile Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 17 }));
-            RGBBlueVolatiles = Config.Bind("Volatiles Color", "Blue", 254, new ConfigDescription("Blue for Volatile Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 16 }));
+            RGBRedVolatiles = Config.Bind("ColoredGasses Volatiles RGB Color Sliders", "Volatiles Color Red", 232, new ConfigDescription("Red for Volatile Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {  Browsable = true }));
+            RGBGreenVolatiles = Config.Bind("ColoredGasses Volatiles RGB Color Sliders", "Volatiles Color Green", 0, new ConfigDescription("Green for Volatile Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {  Browsable = true }));
+            RGBBlueVolatiles = Config.Bind("ColoredGasses Volatiles RGB Color Sliders", "Volatiles Color Blue", 254, new ConfigDescription("Blue for Volatile Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
 
-            RGBRedPollutant = Config.Bind("Pollutant Color", "Red", 255, new ConfigDescription("Red for Pollutant Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 15}));
-            RGBGreenPollutant = Config.Bind("Pollutant Color", "Green", 255, new ConfigDescription("Green for Pollutant Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 14 }));
-            RGBBluePollutant = Config.Bind("Pollutant Color", "Blue", 0, new ConfigDescription("Blue for Pollutant Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 13 }));
+            RGBRedPollutant = Config.Bind("ColoredGasses Pollutant RGB Color Sliders", "Pollutant Color Red", 255, new ConfigDescription("Red for Pollutant Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {  Browsable = true }));
+            RGBGreenPollutant = Config.Bind("ColoredGasses Pollutant RGB Color Sliders", "Pollutant Color Green", 255, new ConfigDescription("Green for Pollutant Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {  Browsable = true }));
+            RGBBluePollutant = Config.Bind("ColoredGasses Pollutant RGB Color Sliders", "Pollutant Color Blue", 0, new ConfigDescription("Blue for Pollutant Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
 
-            RGBRedNitrogen = Config.Bind("Nitrogen Color", "Red", 255, new ConfigDescription("Red for Nitrogen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 12 }));
-            RGBGreenNitrogen = Config.Bind("Nitrogen Color", "Green", 140, new ConfigDescription("Green for Nitrogen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 11 }));
-            RGBBlueNitrogen = Config.Bind("Nitrogen Color", "Blue", 0, new ConfigDescription("Blue for Nitrogen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 10 }));
+            RGBRedNitrogen = Config.Bind("ColoredGasses Nitrogen RGB Color Sliders", "Nitrogen Color Red", 255, new ConfigDescription("Red for Nitrogen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
+            RGBGreenNitrogen = Config.Bind("ColoredGasses Nitrogen RGB Color Sliders", "Nitrogen Color Green", 140, new ConfigDescription("Green for Nitrogen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
+            RGBBlueNitrogen = Config.Bind("ColoredGasses Nitrogen RGB Color Sliders", "Nitrogen Color Blue", 0, new ConfigDescription("Blue for Nitrogen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
 
-            RGBRedOxygen = Config.Bind("Oxygen Color", "Red", 0, new ConfigDescription("Red for Oxygen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 9 }));
-            RGBGreenOxygen = Config.Bind("Oxygen Color", "Green", 201, new ConfigDescription("Green for Oxygen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 8 }));
-            RGBBlueOxygen = Config.Bind("Oxygen Color", "Blue", 254, new ConfigDescription("Blue for Oxygen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 7 }));
+            RGBRedOxygen = Config.Bind("ColoredGasses Oxygen RGB Color Sliders", "Oxygen Color Red", 0, new ConfigDescription("Red for Oxygen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {  Browsable = true }));
+            RGBGreenOxygen = Config.Bind("ColoredGasses Oxygen RGB Color Sliders", "Oxygen Color Green", 201, new ConfigDescription("Green for Oxygen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
+            RGBBlueOxygen = Config.Bind("ColoredGasses Oxygen RGB Color Sliders", "Oxygen Color Blue", 254, new ConfigDescription("Blue for Oxygen Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
 
-            RGBRedNitrousOxide = Config.Bind("Nitrous Oxide Color", "Red", 0, new ConfigDescription("Red for Nitrous Oxide Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 6 }));
-            RGBGreenNitrousOxide = Config.Bind("Nitrous Oxide Color", "Green", 255, new ConfigDescription("Green for Nitrous Oxide Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 5 }));
-            RGBBlueNitrousOxide = Config.Bind("Nitrous Oxide Color", "Blue", 0, new ConfigDescription("Blue for Nitrous Oxide Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 4 }));
+            RGBRedNitrousOxide = Config.Bind("ColoredGasses Nitrous RGB Color Sliders", "Nitrous Oxide Color Red", 0, new ConfigDescription("Red for Nitrous Oxide Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {  Browsable = true }));
+            RGBGreenNitrousOxide = Config.Bind("ColoredGasses Nitrous RGB Color Sliders", "Nitrous Oxide Color Green", 255, new ConfigDescription("Green for Nitrous Oxide Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {  Browsable = true }));
+            RGBBlueNitrousOxide = Config.Bind("ColoredGasses Nitrous RGB Color Sliders", "Nitrous Oxide Color Blue", 0, new ConfigDescription("Blue for Nitrous Oxide Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
 
-            RGBRedWater = Config.Bind("Water Color", "Red", 0, new ConfigDescription("Red for Water Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 3 }));
-            RGBGreenWater = Config.Bind("Water Color", "Green", 0, new ConfigDescription("Green for Water Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 1 }));
-            RGBBlueWater = Config.Bind("Water Color", "Blue", 255, new ConfigDescription("Blue for Water Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes { IsAdvanced = true, Order = 1 }));
-        }
-
-        void AddKeyInputs()
-        {
-            _keybind = Config.Bind("General", "Show this window hotkey", new KeyboardShortcut(KeyCode.F6), new ConfigDescription("Change which key you want to open this menu", null, null));
+            RGBRedWater = Config.Bind("ColoredGasses Water RGB Color Sliders", "Water Color Red", 0, new ConfigDescription("Red for Water Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
+            RGBGreenWater = Config.Bind("ColoredGasses Water RGB Color Sliders", "Water Color Green", 0, new ConfigDescription("Green for Water Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {   Browsable = true }));
+            RGBBlueWater = Config.Bind("ColoredGasses Water RGB Color Sliders", "Water Color Blue", 255, new ConfigDescription("Blue for Water Color", new AcceptableValueRange<int>(0, 255), new ConfigurationManagerAttributes {  Browsable = true }));
         }
     }
 }

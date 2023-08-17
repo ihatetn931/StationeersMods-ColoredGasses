@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <CommonDir>C:\Program Files (x86)\Steam\steamapps\common\</CommonDir>
+    <CommonDir>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\ColoredGasses</CommonDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,8 +42,9 @@
     <Reference Include="BepInEx">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Stationeers\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="ConfigurationManager">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Stationeers\BepInEx\plugins\ConfigurationManager.dll</HintPath>
+    <Reference Include="ConfigurationManager, Version=18.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\ConfigurationManager\Scripts\ConfigurationManager.dll</HintPath>
     </Reference>
     <Reference Include="Facepunch.Steamworks.Win64">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Stationeers\rocketstation_Data\Managed\Facepunch.Steamworks.Win64.dll</HintPath>
@@ -89,6 +90,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)bin\Debug\ColoredGasses.dll" "$(CommonDir)Stationeers\BepInEx\plugins\ColoredGasses"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)\bin\Debug\ColoredGasses.dll" "$(CommonDir)\Scripts\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

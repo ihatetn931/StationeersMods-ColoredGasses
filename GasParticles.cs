@@ -2,9 +2,6 @@
 using Assets.Scripts;
 using HarmonyLib;
 using UnityEngine;
-using ConfigurationManager;
-using Steamworks.ServerList;
-using BepInEx;
 using Assets.Scripts.Util;
 
 namespace ColoredGasses
@@ -18,7 +15,7 @@ namespace ColoredGasses
             [HarmonyPrefix]
             static bool Prefix(AtmosphericsController atmosphericsController, AtmosphericsManager __instance)
             {
-                if (BepinXLoader.toggleColorGasParticles.Value)
+                if (ColoredGasses.toggleColorGasParticles.Value)
                 {
                     for (int j = 0; j < atmosphericsController.Atmospheres.Count; j++)
                     {
@@ -35,32 +32,32 @@ namespace ColoredGasses
                         float maxValue = 0f;
                         if (carbon / 100 > maxValue)
                         {
-                            AtmosphericsManager.emitParams.startColor = new Color32((byte)BepinXLoader.RGBRedCarbon.Value, (byte)BepinXLoader.RGBGreenCarbon.Value, (byte)BepinXLoader.RGBBlueCarbon.Value, 255);
+                            AtmosphericsManager.emitParams.startColor = new Color32((byte)ColoredGasses.RGBRedCarbon.Value, (byte)ColoredGasses.RGBGreenCarbon.Value, (byte)ColoredGasses.RGBBlueCarbon.Value, 255);
                             AtmosphericsManager.Emit(atmosphericsController.Atmospheres, atmosphericsController.GasVisualizerParticleSystem, UnityEngine.Random.insideUnitSphere, AtmosphericsManager.AirVisualizerEmitCondition, true);
                         }
                         if (volatiles / 100 > maxValue)
                         {
-                            AtmosphericsManager.emitParams.startColor = new Color32((byte)BepinXLoader.RGBRedVolatiles.Value, (byte)BepinXLoader.RGBGreenVolatiles.Value, (byte)BepinXLoader.RGBBlueVolatiles.Value, 255);
+                            AtmosphericsManager.emitParams.startColor = new Color32((byte)ColoredGasses.RGBRedVolatiles.Value, (byte)ColoredGasses.RGBGreenVolatiles.Value, (byte)ColoredGasses.RGBBlueVolatiles.Value, 255);
                             AtmosphericsManager.Emit(atmosphericsController.Atmospheres, atmosphericsController.GasVisualizerParticleSystem, UnityEngine.Random.insideUnitSphere, AtmosphericsManager.AirVisualizerEmitCondition, true);
                         }
                         if (pollutant / 100 > maxValue)
                         {
-                            AtmosphericsManager.emitParams.startColor = new Color32((byte)BepinXLoader.RGBRedPollutant.Value, (byte)BepinXLoader.RGBGreenPollutant.Value, (byte)BepinXLoader.RGBBluePollutant.Value, 255);
+                            AtmosphericsManager.emitParams.startColor = new Color32((byte)ColoredGasses.RGBRedPollutant.Value, (byte)ColoredGasses.RGBGreenPollutant.Value, (byte)ColoredGasses.RGBBluePollutant.Value, 255);
                             AtmosphericsManager.Emit(atmosphericsController.Atmospheres, atmosphericsController.GasVisualizerParticleSystem, UnityEngine.Random.insideUnitSphere, AtmosphericsManager.AirVisualizerEmitCondition, true);
                         }
                         if (nitrogen / 100 > maxValue)
                         {
-                            AtmosphericsManager.emitParams.startColor = new Color32((byte)BepinXLoader.RGBRedNitrogen.Value, (byte)BepinXLoader.RGBGreenNitrogen.Value, (byte)BepinXLoader.RGBBlueNitrogen.Value, 255);
+                            AtmosphericsManager.emitParams.startColor = new Color32((byte)ColoredGasses.RGBRedNitrogen.Value, (byte)ColoredGasses.RGBGreenNitrogen.Value, (byte)ColoredGasses.RGBBlueNitrogen.Value, 255);
                             AtmosphericsManager.Emit(atmosphericsController.Atmospheres, atmosphericsController.GasVisualizerParticleSystem, UnityEngine.Random.insideUnitSphere, AtmosphericsManager.AirVisualizerEmitCondition, true);
                         }
                         if (oxygen / 100 > maxValue)
                         {
-                            AtmosphericsManager.emitParams.startColor = new Color32((byte)BepinXLoader.RGBRedOxygen.Value, (byte)BepinXLoader.RGBGreenOxygen.Value, (byte)BepinXLoader.RGBBlueOxygen.Value, 255);
+                            AtmosphericsManager.emitParams.startColor = new Color32((byte)ColoredGasses.RGBRedOxygen.Value, (byte)ColoredGasses.RGBGreenOxygen.Value, (byte)ColoredGasses.RGBBlueOxygen.Value, 255);
                             AtmosphericsManager.Emit(atmosphericsController.Atmospheres, atmosphericsController.GasVisualizerParticleSystem, UnityEngine.Random.insideUnitSphere, AtmosphericsManager.AirVisualizerEmitCondition, true);
                         }
                         if (nitrousOxide / 100 > maxValue)
                         {
-                            AtmosphericsManager.emitParams.startColor = new Color32((byte)BepinXLoader.RGBRedNitrousOxide.Value, (byte)BepinXLoader.RGBGreenNitrousOxide.Value, (byte)BepinXLoader.RGBBlueNitrousOxide.Value, 255);
+                            AtmosphericsManager.emitParams.startColor = new Color32((byte)ColoredGasses.RGBRedNitrousOxide.Value, (byte)ColoredGasses.RGBGreenNitrousOxide.Value, (byte)ColoredGasses.RGBBlueNitrousOxide.Value, 255);
                             AtmosphericsManager.Emit(atmosphericsController.Atmospheres, atmosphericsController.GasVisualizerParticleSystem, UnityEngine.Random.insideUnitSphere, AtmosphericsManager.AirVisualizerEmitCondition, true);
                         }
                     }
@@ -71,37 +68,6 @@ namespace ColoredGasses
                     AtmosphericsManager.Emit(atmosphericsController.Atmospheres, atmosphericsController.GasVisualizerParticleSystem, UnityEngine.Random.insideUnitSphere, AtmosphericsManager.AirVisualizerEmitCondition, true);
                 }
                 return false;
-            }
-        }
-
-        [HarmonyPatch(typeof(CameraController), nameof(CameraController.ManagerAwake))]
-        public static class ManagerBase_ManagerAwake_Patch
-        {
-            [HarmonyPostfix]
-            static void Postfix(ManagerBase __instance)
-            {
-                BepinXLoader.go = new GameObject("ConfigurationManager");
-                BepinXLoader.man = BepinXLoader.go.AddComponent<ConfigurationManager.ConfigurationManager>();
-            }
-        }
-
-        [HarmonyPatch(typeof(CameraController), nameof(CameraController.LateUpdate))]
-        public static class ManagerBase_ManagerUpdate_Patch
-        {
-            [HarmonyPostfix]
-            static void Postfix(ManagerBase __instance)
-            {
-                //Debug.LogError("1");
-                if (BepinXLoader._keybind.Value.IsDown())
-                {
-                    //Debug.LogError("2");
-                    if (BepinXLoader.man != null)
-                    {
-                        //Debug.LogError("3");
-                        BepinXLoader.man.DisplayingWindow = true;
-                        //Debug.LogError("4");
-                    }
-                }
             }
         }
     }
